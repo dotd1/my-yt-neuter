@@ -1,0 +1,256 @@
+[uBlock Origin]
+! Title: My YouTube Neuter (personal pick)
+! Description: Hand-picked rules from yt-neuter (github.com/mchangrh/yt-neuter, Unlicense)
+! Homepage: https://github.com/dotd1/my-yt-neuter
+! Licence: Unlicense
+! Last modified: 2026/11/13
+! Expires: 1 day
+!
+! Codes in [brackets] match the review list (Y = yt-neuter.txt, M = misc, H = hyper, S = noshorts, B = sponsorblock).
+! Changes from the originals:
+!   - rules already covered by [M10] "hide all Home shelves" are left out (Y1, Y18 shelf, Y19, Y23 shelf, S3 desktop)
+!   - "Memebership" typo in [Y11] fixed to "Membership"
+!   - duplicates between the lists merged ([Y24]=[B8], [Y50]=[B11])
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! SPEED: blocked downloads (less script / CPU / data)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! [M7] hover previews: blocks the player module that plays a video when you hover a thumbnail
+||www.youtube.com/s/player/*/player_ias.vflset/*/inline_preview.js$script
+
+! [H3] Lottie animation engine (like / subscribe animations; buttons still work)
+||www.gstatic.com/external_hosted/lottie/lottie_light.js$script,domain=youtube.com
+||www.youtube.com/s/desktop/*/jsbin/lottie-light.vflset/lottie-light.js$script,domain=youtube.com
+! [H4] Lottie animation files
+||www.gstatic.com/youtube/img/lottie/*$domain=youtube.com
+
+! [M3] Chromecast code (the Cast button disappears)
+||www.gstatic.com/*/cast_sender.js$script
+! [M4] Chromecast backup code
+||www.youtube.com/s/desktop/*/jsbin/www-tampering.vflset/www-tampering.js$script
+! [M5] phone / TV remote code ("Watch on TV")
+||www.youtube.com/s/player/*/player_ias.vflset/*/remote.js$script
+
+! [M2] "install YouTube as an app" file
+||www.youtube.com/manifest.webmanifest
+
+! [Y32] Rolling numbers + live metadata updates.
+!   What it does: blocks the two scripts that animate the view / like counters as they roll,
+!   and the request YouTube repeats while you watch to refresh title, views and likes.
+!   Effect: counters show a fixed number; the live viewer count on streams stops updating.
+!   Risk: scheduler.js is a general YouTube helper. If a future YouTube update moves other work
+!   into it, something can stop working without warning. If anything on the watch page acts
+!   strange, disable the scheduler.js line first.
+||www.youtube.com/s/desktop/*/jsbin/web-animations-next-lite.min.vflset/web-animations-next-lite.min.js$script,domain=youtube.com
+||www.youtube.com/s/desktop/*/jsbin/scheduler.vflset/scheduler.js$script,domain=youtube.com
+||www.youtube.com/youtubei/v1/updated_metadata$domain=youtube.com
+
+! [Y34] end-screen module (video suggestions at the end of a video are never loaded)
+||www.youtube.com/s/player/*/player_ias.vflset/*/endscreen.js^$script
+
+! [Y52] Download button + offline-download module (Premium downloads)
+||www.youtube.com/s/player/*/player_ias.vflset/*/offline.js$script
+www.youtube.com##ytd-download-button-renderer
+
+! [Y3] doodle logos: images not downloaded, normal logo shows
+||www.gstatic.com/youtube/img/promos/*$image
+www.youtube.com##.ytd-yoodle-renderer
+
+! [M23] emoji shortcut data for the comment box (the emoji picker there stops working)
+||www.gstatic.com/youtube/img/emojis/emoji-*.json
+||www.gstatic.com/youtube/img/emojis/emojis-svg-*.json
+
+! [H1] images from yt3.googleusercontent.com: channel banners, channel emoji, uploader pictures in comments
+||yt3.googleusercontent.com$image,domain=youtube.com
+! [H2] images from yt3.ggpht.com: ALL profile pictures (channels, comments, your own avatar)
+||yt3.ggpht.com$image,domain=youtube.com
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! Header / sidebar
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! [Y2] country code next to the logo
+www.youtube.com##ytd-topbar-logo-renderer>#country-code
+! [Y4] voice search button + its sounds
+www.youtube.com###voice-search-button
+||www.youtube.com/s/search/audio/*.mp3$media
+! [Y12] "Sign in" nag
+www.youtube.com##ytd-guide-signin-promo-renderer
+! [Y14] "Premium" link
+www.youtube.com##a.ytd-guide-entry-renderer[href="/premium"]
+! [Y17] sidebar footer (About, Press, Terms...)
+www.youtube.com##ytd-guide-renderer #footer
+! [S2] Shorts in the sidebar / mobile tab bar
+www.youtube.com##ytd-guide-entry-renderer:has-text(Shorts)
+www.youtube.com##ytd-mini-guide-entry-renderer:has-text(Shorts)
+m.youtube.com##ytm-pivot-bar-item-renderer:has(.pivot-bar-item-title:has-text(Shorts))
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! Pop-ups / nags
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! [Y6] surveys
+youtube.com###survey
+www.youtube.com##ytd-inline-survey-renderer
+www.youtube.com##.ytd-inline-survey-renderer
+youtube.com##yt-survey-answer-card-renderer
+www.youtube.com##.ytd-checkbox-survey-renderer
+www.youtube.com##ytd-feedback-survey-renderer
+www.youtube.com##.ytd-feedback-survey-renderer
+www.youtube.com##.ytd-survey-follow-up-renderer
+www.youtube.com##ytd-survey-follow-up-renderer
+www.youtube.com##.ytd-multi-stage-survey-renderer
+www.youtube.com##ytd-multi-stage-survey-renderer
+www.youtube.com##ytd-rating-survey-renderer
+www.youtube.com##.ytd-rating-survey-renderer
+www.youtube.com##.ytd-red-cancel-survey-renderer
+www.youtube.com##ytd-red-cancel-survey-renderer
+www.youtube.com##ytd-single-option-survey-renderer
+www.youtube.com##.ytd-single-option-survey-renderer
+! [Y25] surveys attached under videos
+youtube.com###attached-survey
+! [Y10] Premium "enhanced bitrate" nags (old + 2025 version)
+www.youtube.com##ytd-popup-container:has(>tp-yt-paper-dialog>ytd-offline-promo-renderer)
+www.youtube.com##ytd-popup-container > tp-yt-paper-dialog:has(upsell-view-model)
+! [Y11] "Become a member" pop-ups
+www.youtube.com##tp-yt-paper-dialog:has(yt-mealbar-promo-renderer)
+www.youtube.com##yt-bubble-hint-renderer > .yt-bubble-hint-renderer:has(.yt-formatted-string:has-text(Membership))
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! Home page
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! [M10] ALL Home shelves (Shorts, games, Playables, Breaking news, free movies, posts...):
+!   only the plain video grid stays. This also covers Y1, Y19, Y23 shelves, S3 desktop.
+www.youtube.com##ytd-rich-shelf-renderer
+m.youtube.com##ytm-rich-section-renderer
+www.youtube.com##ytd-rich-section-renderer:has(>#content>ytd-rich-shelf-renderer:only-child)
+! [S3] Home Shorts shelf (mobile site; desktop is covered by M10)
+m.youtube.com##ytm-rich-section-renderer:has(>ytm-reel-shelf-renderer)
+! [Y18] free movies with ads
+www.youtube.com##ytd-rich-item-renderer:has(.badge-style-type-ypc> span:has-text(Free with Ads))
+! [Y22] category chips above Home (All / Gaming / Music...) + header height fix
+www.youtube.com##ytd-feed-filter-chip-bar-renderer:has(yt-chip-cloud-chip-renderer[chip-style=STYLE_HOME_FILTER])
+m.youtube.com##ytm-feed-filter-chip-bar-renderer:has(ytm-chip-cloud-chip-renderer[chip-style=STYLE_HOME_FILTER])
+www.youtube.com###frosted-glass.with-chipbar.ytd-app:style(height:56px !important)
+! [Y23] community posts section
+www.youtube.com##ytd-item-section-renderer:has(a[href$="/posts"])
+! [Y24 = B8] members-only videos
+www.youtube.com##ytd-rich-item-renderer:has(.yt-badge-shape--membership)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! Video cards (everywhere)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! [M11] hover preview players removed from the page (pairs with M7)
+www.youtube.com##ytd-video-preview
+www.youtube.com###video-preview:remove()
+! [Y27] Mix playlists in the sidebar
+www.youtube.com##.ytd-compact-radio-renderer
+! [Y28] movie suggestions
+www.youtube.com##ytd-compact-movie-renderer
+! [Y29] YouTube Music playlists in recommendations
+www.youtube.com##ytd-compact-playlist-renderer .ytd-channel-name:has-text(/^YouTube/):upward(ytd-compact-playlist-renderer)
+! [Y30] "Fundraiser", "New", "4K" badges
+www.youtube.com##.badge[aria-label="Fundraiser"]
+m.youtube.com##ytm-badge:has-text(Fundraiser)
+www.youtube.com##.badge[aria-label="New"]
+www.youtube.com##.yt-content-metadata-view-model-wiz__badge:has-text(New)
+m.youtube.com##ytm-badge:has-text(New)
+www.youtube.com##.badge[aria-label="4K"]
+m.youtube.com##ytm-badge:has-text(4K)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! Shorts
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! [S1] Shorts shelves (channel pages, search)
+www.youtube.com##ytd-reel-shelf-renderer
+www.youtube.com##grid-shelf-view-model:has(.yt-shelf-header-layout__title):has-text(Shorts)
+m.youtube.com##ytm-reel-shelf-renderer
+! [S4] Shorts tab on channels
+youtube.com##tp-yt-paper-tab:has(> .tab-content:has-text(Shorts))
+youtube.com##yt-tab-shape[tab-title="Shorts"]
+! [S6] video cards with the Shorts icon
+www.youtube.com##ytd-rich-item-renderer:has(ytd-thumbnail-overlay-time-status-renderer[overlay-style=SHORTS])
+www.youtube.com##ytd-grid-video-renderer:has(ytd-thumbnail-overlay-time-status-renderer[overlay-style=SHORTS])
+www.youtube.com##ytd-video-renderer:has(ytd-thumbnail-overlay-time-status-renderer[overlay-style=SHORTS])
+m.youtube.com##ytm-video-with-context-renderer:has(ytm-thumbnail-overlay-time-status-renderer[data-style="SHORTS"])
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! Watch page
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! [Y33] Ambient mode.
+!   What it does: hides the blurred, coloured glow YouTube paints around the player
+!   (a scaled copy of the video frame drawn behind the player).
+!   Note: hiding only stops it showing; YouTube may still draw it. The Enhance+ userscript option
+!   "No player gradients + ambient mode off" switches it off in YouTube's own settings, which
+!   also stops the drawing. Keep this rule as a backup.
+www.youtube.com###player>#cinematics.ytd-watch-flexy
+www.youtube.com###player>#cinematics-container
+m.youtube.com##.below-the-player-cinematic-container
+! [Y35] "+10 s / -10 s" seek feedback on the video
+youtube.com##.ytp-doubletap-ui-legacy
+! [Y45] fundraiser tag
+www.youtube.com##ytd-badge-supported-renderer:has(.badge-style-type-ypc):remove()
+! [Y46] "Buy product" badge + product count
+youtube.com##.ytp-suggested-action-badge
+youtube.com##yt-formatted-string>span:has-text(product)
+! [Y47] "Trending #x" / hashtag line above the title
+youtube.com###title>#super-title
+! [Y49] every #hashtag link (descriptions, comments)
+youtube.com##a[href^="/hashtag/"]
+! [Y58] hashtags under the title
+youtube.com###info-container #info>a.yt-simple-endpoint[href^="/hashtag/"]
+! [Y50 = B11] Join / free trial / TV subscription buttons
+youtube.com###sponsor-button
+youtube.com##button[aria-label="Join this channel"]
+youtube.com###purchase-button
+! [Y59] merch, tickets, products in this video
+youtube.com##ytd-merch-shelf-renderer
+youtube.com###ticket-shelf
+www.youtube.com##ytd-metadata-row-container-renderer:has(ytd-rich-metadata-renderer[component-style="RICH_METADATA_RENDERER_STYLE_SQUARE"])
+! [Y60] "Clarify" / COVID / fact-check info box
+youtube.com###clarify-box
+! [M24] subscribe button animation
+www.youtube.com##.smartimation__border
+www.youtube.com##yt-animated-action
+! [M37] movie / TV offers
+youtube.com###offer-module
+
+!! recommendations sidebar
+! [Y69] "Watch on YouTube" movie offers + "turn on watch history" nudges
+www.youtube.com##ytd-tvfilm-offer-module-renderer
+www.youtube.com##ytd-feed-nudge-renderer
+! [Y70] fundraisers
+www.youtube.com###donation-shelf
+m.youtube.com##ytm-donation-shelf-renderer
+! [Y71] other sponsored videos, ads panel, shopping panel
+www.youtube.com##ytd-engagement-panel-section-list-renderer[target-id="ytbc-related-shelf"]
+www.youtube.com##ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"]
+www.youtube.com##ytd-engagement-panel-section-list-renderer[target-id^="shopping_panel_for_entry_point"]
+
+!! comments / chat
+! [M20] all emoji images (comments, chat): emoji become blank
+www.youtube.com##img.emoji
+! [Y84] Super Chat ticker + donate button in live chat
+youtube.com###ticker
+youtube.com###product-picker
+! [Y86] channel custom emoji in chat + messages that are only emoji
+youtube.com##.emoji[data-emoji-id]
+youtube.com##yt-live-chat-text-message-renderer:not(:has(#message:min-text-length(1)))
+! [Y87] Super Chat and membership messages in chat
+youtube.com##yt-live-chat-paid-message-renderer
+youtube.com##yt-live-chat-membership-item-renderer
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!! Channel pages
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! [Y77] channel banner (the image itself is already blocked by H1; this removes the empty space)
+www.youtube.com##.banner-visible-area
+www.youtube.com##.page-header-banner
+www.youtube.com###page-header-banner
+m.youtube.com##.c4-tabbed-header-page-header-banner
