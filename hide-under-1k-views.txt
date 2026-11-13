@@ -1,0 +1,24 @@
+[uBlock Origin]
+! Title: My YouTube Neuter: hide videos under 1K views
+! Description: Optional add-on to my-yt-neuter. Hides video cards whose view count is under 1,000.
+! Homepage: https://github.com/dotd1/my-yt-neuter
+! Licence: Unlicense
+! Last modified: 2026/11/13
+! Expires: 1 day
+!
+! How the counter check works:
+!   YouTube shortens view counts: 1,000 and up shows as "1K", "12K", "1.2M", ...
+!   Anything under 1,000 is shown as the plain number ("7", "85", "999"), sometimes followed by
+!   "views" ("523 views", "1 view"), and a video with zero views shows "No views".
+!   The regex /^(\d{1,3}|No)( views?)?$/ matches text that is ONLY:
+!     1 to 3 digits (or the word "No"), optionally followed by " view" / " views", nothing else.
+!   So "999", "523 views" and "No views" match, but "1K", "1.2K views" and "3M" do not.
+!   When it matches, the whole card is hidden.
+!   Note: the word "views" is English. With YouTube in another language, only bare numbers match.
+
+! New layout (Home, sidebar, subscriptions): the view count is the text right after the eye icon
+www.youtube.com##yt-lockup-view-model:has(.ytContentMetadataViewModelLeadingIcon + .ytContentMetadataViewModelMetadataText:has-text(/^(\d{1,3}|No)( views?)?$/))
+www.youtube.com##ytd-rich-item-renderer:has(.ytContentMetadataViewModelLeadingIcon + .ytContentMetadataViewModelMetadataText:has-text(/^(\d{1,3}|No)( views?)?$/))
+
+! Old layout (search results): the view count is the first metadata item under the title
+www.youtube.com##ytd-video-renderer:has(.inline-metadata-item:first-of-type:has-text(/^(\d{1,3}|No)( views?)?$/))

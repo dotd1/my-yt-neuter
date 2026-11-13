@@ -44,6 +44,42 @@ Or paste the contents of [`my-yt-neuter.txt`](./my-yt-neuter.txt) into uBlock Or
  - Voice search, country code, sign-in nag, Premium link, sidebar footer
  - "New", "4K", "Fundraiser" badges, Mix and YouTube Music playlists in recommendations
 
+## Optional: hide videos under 1K views
+
+This one is a separate list, so it stays off unless you add it. It hides any video card with fewer than 1,000 views, which clears out the low-view videos YouTube pushes into Home, the sidebar and search.
+
+[add to uBo](https://subscribe.adblockplus.org/?location=https%3A%2F%2Fraw.githubusercontent.com%2Fdotd1%2Fmy-yt-neuter%2Fmain%2Fhide-under-1k-views.txt&title=My%20YouTube%20Neuter%3A%20under%201K%20views)  
+
+Filter URL  
+GitHub: `https://raw.githubusercontent.com/dotd1/my-yt-neuter/main/hide-under-1k-views.txt`  
+
+Or paste the contents of [`hide-under-1k-views.txt`](./hide-under-1k-views.txt) into **My filters**.
+
+### How the counter works
+YouTube shortens view counts once they reach 1,000:
+
+| Real views | Shown as | Hidden? |
+|---|---|---|
+| 0 | `No views` | **yes** |
+| 7 | `7` | **yes** |
+| 523 | `523 views` | **yes** |
+| 999 | `999` | **yes** |
+| 1,000 | `1K` | no |
+| 1,250,000 | `1.2M views` | no |
+
+So **any count under 1,000 is a plain number of 1 to 3 digits** (or "No" for zero), sometimes with the word "views" after it. Each rule finds the view-count text on a card and tests it with the regex `/^(\d{1,3}|No)( views?)?$/`:
+ - `^` and `$`: the whole text must match, nothing before or after
+ - `(\d{1,3}|No)`: one to three digits, or the word "No"
+ - `( views?)?`: optionally followed by " view" or " views"
+
+`999`, `523 views` and `No views` pass, while `1K` or `1.2M views` fail because of the letter after the digits. When the text passes, `:has()` hides the whole card that contains it.
+
+> **English only:** "views" and "No" are matched in English. With YouTube set to another language, only bare numbers (`523`) are caught.
+
+Where it looks for the count:
+ - **New layout** (Home, sidebar, subscriptions): the text right after the eye icon (`.ytContentMetadataViewModelLeadingIcon + .ytContentMetadataViewModelMetadataText`)
+ - **Old layout** (search results): the first metadata item under the title (`.inline-metadata-item:first-of-type`)
+
 ## What it breaks
  - **Profile pictures** are blank everywhere, including your own avatar
  - **Cast button** is gone
